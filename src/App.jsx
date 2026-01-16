@@ -249,10 +249,10 @@ export default function ProjectTracker() {
 
         {/* Formulaire */}
         {showForm && (
-          <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
-            <div className="bg-white rounded-lg p-6 max-w-md w-full">
+          <div className="fixed inset-0 bg-[#020608]/90 backdrop-blur-sm flex items-center justify-center p-4 z-50">
+            <div className="bg-[#0a141a] border border-emerald-800 rounded-lg p-6 max-w-md w-full shadow-xl shadow-emerald-900/40">
               <div className="flex justify-between items-center mb-4">
-                <h2 className="text-xl font-bold">
+                <h2 className="text-xl font-extrabold tracking-wider text-emerald-400">
                   {editingItem ? "Modifier" : "Ajouter"}{" "}
                   {activeTab === "bugs" ? "un bug" : "une tâche"}
                 </h2>
@@ -265,7 +265,7 @@ export default function ProjectTracker() {
               </div>
               <form onSubmit={handleSubmit} className="space-y-4">
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                  <label className="block text-sm font-bold tracking-wide text-emerald-300 mb-1">
                     Titre
                   </label>
                   <input
@@ -275,7 +275,7 @@ export default function ProjectTracker() {
                     onChange={(e) =>
                       setFormData({ ...formData, title: e.target.value })
                     }
-                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    className="w-full px-3 py-2 bg-[#050b0f] border border-emerald-800 rounded-md text-emerald-200 focus:outline-none focus:ring-2 focus:ring-emerald-500"
                   />
                 </div>
                 <div>
@@ -288,7 +288,7 @@ export default function ProjectTracker() {
                       setFormData({ ...formData, description: e.target.value })
                     }
                     rows={3}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    className="w-full px-3 py-2 bg-[#050b0f] border border-emerald-800 rounded-md text-emerald-200 focus:outline-none focus:ring-2 focus:ring-emerald-500"
                   />
                 </div>
                 <div>
@@ -300,7 +300,7 @@ export default function ProjectTracker() {
                     onChange={(e) =>
                       setFormData({ ...formData, priority: e.target.value })
                     }
-                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    className="w-full px-3 py-2 bg-[#050b0f] border border-emerald-800 rounded-md text-emerald-200 focus:outline-none focus:ring-2 focus:ring-emerald-500"
                   >
                     <option value="low">Basse</option>
                     <option value="medium">Moyenne</option>
@@ -318,20 +318,20 @@ export default function ProjectTracker() {
                       setFormData({ ...formData, assignee: e.target.value })
                     }
                     placeholder="Nom du membre"
-                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    className="w-full px-3 py-2 bg-[#050b0f] border border-emerald-800 rounded-md text-emerald-200 focus:outline-none focus:ring-2 focus:ring-emerald-500"
                   />
                 </div>
                 <div className="flex gap-3 pt-4">
                   <button
                     type="submit"
-                    className="flex-1 bg-blue-600 text-white py-2 rounded-md hover:bg-blue-700 transition-colors"
+                    className="flex-1 bg-emerald-600 text-black py-2 rounded-md hover:bg-emerald-500 transition-colors font-bold tracking-wide shadow-lg shadow-emerald-900/40"
                   >
                     {editingItem ? "Modifier" : "Ajouter"}
                   </button>
                   <button
                     type="button"
                     onClick={resetForm}
-                    className="flex-1 bg-gray-200 text-gray-700 py-2 rounded-md hover:bg-gray-300 transition-colors"
+                    className="flex-1 bg-[#0a141a] text-emerald-300 py-2 rounded-md hover:bg-emerald-900/20 transition-colors border border-emerald-800"
                   >
                     Annuler
                   </button>
