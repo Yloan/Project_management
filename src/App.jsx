@@ -377,7 +377,7 @@ export default function ProjectTracker() {
                       <h3
                         className={`text-lg font-semibold ${
                           item.status === "closed"
-                            ? "line-through text-gray-500"
+                            ? "line-through text-emerald-500"
                             : "text-gray-900"
                         }`}
                       >
