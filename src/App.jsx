@@ -62,7 +62,7 @@ const supabase = {
         return { data, error: res.ok ? null : data };
       },
     }),
-    delete: async () => ({
+    delete: () => ({
       eq: async (column, value) => {
         const res = await fetch(
           `${SUPABASE_URL}/rest/v1/${table}?${column}=eq.${value}`,
