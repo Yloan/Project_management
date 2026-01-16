@@ -158,15 +158,15 @@ export default function ProjectTracker() {
 
   const toggleStatus = async (item) => {
     const newStatus = item.status === "open" ? "closed" : "open";
-    try {
-      await supabase
-        .from(activeTab)
-        .update({ status: newStatus })
-        .eq("id", item.id);
-      await loadData();
-    } catch (error) {
-      console.error("Erreur:", error);
-    }
+
+    const res = await supabase
+      .from(activeTab)
+      .update({ status: newStatus })
+      .eq("id", item.id);
+
+    console.log(res);
+
+    await loadData();
   };
 
   const resetForm = () => {
