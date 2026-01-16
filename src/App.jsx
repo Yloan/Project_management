@@ -331,7 +331,7 @@ export default function ProjectTracker() {
                   <button
                     type="button"
                     onClick={resetForm}
-                    className="flex-1 bg-[#0a141a] text-emerald-300 py-2 rounded-md hover:bg-emerald-900/20 transition-colors border border-emerald-800"
+                    className="flex-1 bg-gray-200 text-gray-700 py-2 rounded-md hover:bg-gray-300 transition-colors"
                   >
                     Annuler
                   </button>
@@ -344,15 +344,19 @@ export default function ProjectTracker() {
         {/* Liste des items */}
         <div className="space-y-4">
           {items.length === 0 ? (
-            <div className="bg-white rounded-lg shadow-sm p-8 text-center text-gray-500">
-              Aucun {activeTab === "bugs" ? "bug" : "todo"} pour le moment
+            <div className="bg-[#0a141a] rounded-lg p-10 text-center border border-emerald-800 shadow-inner shadow-emerald-900/40">
+              <p className="text-emerald-400 font-extrabold tracking-widest text-lg mb-2">
+                Aucun {activeTab === "bugs" ? "bug" : "todo"} pour le moment
+              </p>
             </div>
           ) : (
             items.map((item) => (
               <div
                 key={item.id}
-                className={`bg-white rounded-lg shadow-sm p-4 transition-all ${
-                  item.status === "closed" ? "opacity-60" : ""
+                className={`bg-[#0a141a] rounded-lg p-4 border border-emerald-800 shadow-md shadow-emerald-900/30 transition-all ${
+                  item.status === "closed"
+                    ? "opacity-50 grayscale"
+                    : "hover:shadow-emerald-900/60 hover:border-emerald-600"
                 }`}
               >
                 <div className="flex items-start justify-between">
@@ -363,7 +367,7 @@ export default function ProjectTracker() {
                         className={`w-6 h-6 rounded border-2 flex items-center justify-center transition-colors ${
                           item.status === "closed"
                             ? "bg-green-500 border-green-500"
-                            : "border-gray-300 hover:border-green-500"
+                            : "border-emerald-700 hover:border-emerald-400"
                         }`}
                       >
                         {item.status === "closed" && (
