@@ -201,15 +201,13 @@ export default function ProjectTracker() {
   }
 
   return (
-    <div className="min-h-screen bg-[#050b0f] p-6 text-emerald-200">
+    <div className="min-h-screen bg-[#050b0f]-50 p-6 text-emerald-200">
       <div className="max-w-6xl mx-auto">
         <div className="bg-[#0a141a] rounded-lg shadow-lg shadow-emerald-900/30 p-6 mb-6 border border-emerald-800">
           <h1 className="text-3xl font-extrabold text-emerald-400 tracking-wider mb-2">
-            PROJECT TRACKER
+            BLIETZKRIEG
           </h1>
-          <p className="text-emerald-300/70">
-            Tactical bug & task command panel
-          </p>
+          <p className="text-emerald-300/70">La TEAMM</p>
         </div>
 
         {/* Tabs */}
@@ -217,25 +215,25 @@ export default function ProjectTracker() {
           <div className="flex border-b border-emerald-800">
             <button
               onClick={() => setActiveTab("bugs")}
-              className={`flex-1 px-6 py-4 font-bold tracking-wide transition-colors ${
+              className={`flex-1 px-6 py-4 font-medium transition-colors ${
                 activeTab === "bugs"
-                  ? "text-red-400 border-b-2 border-red-500 bg-red-900/20"
-                  : "text-emerald-300 hover:text-emerald-400"
+                  ? "text-red-600 border-b-2 border-red-600"
+                  : "text-gray-600 hover:text-gray-900"
               }`}
             >
               <AlertCircle className="inline mr-2" size={20} />
-              BUGS ({bugs.length})
+              Bugs ({bugs.length})
             </button>
             <button
               onClick={() => setActiveTab("todos")}
-              className={`flex-1 px-6 py-4 font-bold tracking-wide transition-colors ${
+              className={`flex-1 px-6 py-4 font-medium transition-colors ${
                 activeTab === "todos"
-                  ? "text-emerald-400 border-b-2 border-emerald-500 bg-emerald-900/20"
-                  : "text-emerald-300 hover:text-emerald-400"
+                  ? "text-blue-600 border-b-2 border-blue-600"
+                  : "text-gray-600 hover:text-gray-900"
               }`}
             >
               <CheckCircle2 className="inline mr-2" size={20} />
-              TODOS ({todos.length})
+              Todos ({todos.length})
             </button>
           </div>
         </div>
@@ -243,21 +241,12 @@ export default function ProjectTracker() {
         {/* Bouton Ajouter */}
         <button
           onClick={() => setShowForm(true)}
-          className="mb-6 bg-emerald-600 text-black px-6 py-3 rounded-lg hover:bg-emerald-500 transition-colors flex items-center gap-2 font-bold tracking-wide shadow-lg shadow-emerald-900/40"
+          className="mb-6 bg-blue-600 text-white px-6 py-3 rounded-lg hover:bg-blue-700 transition-colors flex items-center gap-2"
         >
           <Plus size={20} />
-          DEPLOY
+          Ajouter {activeTab === "bugs" ? "un bug" : "une tâche"}
         </button>
 
-        {/* Liste des items */}
-        <div className="space-y-4">
-          {items.map((item) => (
-            <div
-              key={item.id}
-              className={`bg-[#0a141a] rounded-lg shadow-sm p-4 border border-emerald-800 ${
-                item.status === "closed" ? "opacity-60" : ""
-              }`}
-            >
         {/* Formulaire */}
         {showForm && (
           <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
