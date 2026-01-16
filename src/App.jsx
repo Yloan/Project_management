@@ -43,7 +43,7 @@ const supabase = {
       const data = await res.json();
       return { data, error: res.ok ? null : data };
     },
-    update: async (updates) => ({
+    update: (updates) => ({
       eq: async (column, value) => {
         const res = await fetch(
           `${SUPABASE_URL}/rest/v1/${table}?${column}=eq.${value}`,
