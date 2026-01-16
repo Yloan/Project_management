@@ -375,10 +375,10 @@ export default function ProjectTracker() {
                         )}
                       </button>
                       <h3
-                        className={`text-lg font-semibold ${
+                        className={`text-lg font-bold tracking-wide ${
                           item.status === "closed"
-                            ? "line-through text-emerald-500"
-                            : "text-gray-900"
+                            ? "line-through text-emerald-900"
+                            : "text-emerald-50"
                         }`}
                       >
                         {item.title}
