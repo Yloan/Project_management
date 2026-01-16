@@ -13,6 +13,7 @@ const SUPABASE_URL = "https://wsjtuvhqhydjvveypmgq.supabase.co";
 const SUPABASE_ANON_KEY =
   "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6IndzanR1dmhxaHlkanZ2ZXlwbWdxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Njg1NzQ2MjUsImV4cCI6MjA4NDE1MDYyNX0.XDQjtSnI8uAxtswVk5YcKmPcTwj5ijirT_4voBrJDiA";
 
+// Client Supabase simple
 const supabase = {
   from: (table) => ({
     select: async (columns = "*") => {
@@ -86,7 +87,6 @@ export default function ProjectTracker() {
   const [loading, setLoading] = useState(true);
   const [showForm, setShowForm] = useState(false);
   const [editingItem, setEditingItem] = useState(null);
-  const [filterStatus, setFilterStatus] = useState("all");
   const [formData, setFormData] = useState({
     title: "",
     description: "",
@@ -95,10 +95,9 @@ export default function ProjectTracker() {
     assignee: "",
   });
 
+  // Charger les données
   useEffect(() => {
     loadData();
-    const interval = setInterval(loadData, 5000);
-    return () => clearInterval(interval);
   }, []);
 
   const loadData = async () => {
@@ -112,17 +111,13 @@ export default function ProjectTracker() {
       if (bugsRes.data) setBugs(bugsRes.data.sort((a, b) => b.id - a.id));
       if (todosRes.data) setTodos(todosRes.data.sort((a, b) => b.id - a.id));
     } catch (error) {
-      console.error("Erreur:", error);
+      console.error("Erreur de chargement:", error);
     }
     setLoading(false);
   };
 
-  const handleSubmit = async () => {
-    if (!formData.title.trim()) {
-      alert("Le titre est requis");
-      return;
-    }
-
+  const handleSubmit = async (e) => {
+    e.preventDefault();
     const table = activeTab;
     const record = { ...formData, created_at: new Date().toISOString() };
 
@@ -187,189 +182,106 @@ export default function ProjectTracker() {
   };
 
   const items = activeTab === "bugs" ? bugs : todos;
-  const filteredItems = items.filter((item) => {
-    if (filterStatus === "all") return true;
-    return item.status === filterStatus;
-  });
 
   const getPriorityColor = (priority) => {
     const colors = {
-      low: "bg-emerald-100 text-emerald-700 border-emerald-200",
-      medium: "bg-amber-100 text-amber-700 border-amber-200",
-      high: "bg-rose-100 text-rose-700 border-rose-200",
+      low: "bg-green-100 text-green-800",
+      medium: "bg-yellow-100 text-yellow-800",
+      high: "bg-red-100 text-red-800",
     };
     return colors[priority] || colors.medium;
   };
 
-  const getStats = () => {
-    const open = items.filter((i) => i.status === "open").length;
-    const closed = items.filter((i) => i.status === "closed").length;
-    return { open, closed, total: items.length };
-  };
-
-  const stats = getStats();
-
-  if (loading && items.length === 0) {
+  if (loading) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-slate-50 to-slate-100 flex items-center justify-center">
-        <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto mb-4"></div>
-          <div className="text-slate-600">Chargement...</div>
-        </div>
+      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+        <div className="text-gray-600">Chargement...</div>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 to-slate-100 p-4 md:p-8">
-      <div className="max-w-7xl mx-auto">
-        {/* Header */}
-        <div className="bg-white rounded-2xl shadow-lg p-6 md:p-8 mb-6 border border-slate-200">
-          <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
-            <div>
-              <h1 className="text-3xl md:text-4xl font-bold text-slate-900 mb-2 bg-gradient-to-r from-blue-600 to-violet-600 bg-clip-text text-transparent">
-                Project Tracker
-              </h1>
-              <p className="text-slate-600">
-                Gestion collaborative de bugs et tâches
-              </p>
-            </div>
-            <div className="flex gap-3 text-sm">
-              <div className="bg-blue-50 px-4 py-2 rounded-lg border border-blue-200">
-                <span className="text-blue-600 font-semibold">
-                  {stats.open}
-                </span>
-                <span className="text-blue-700 ml-1">en cours</span>
-              </div>
-              <div className="bg-green-50 px-4 py-2 rounded-lg border border-green-200">
-                <span className="text-green-600 font-semibold">
-                  {stats.closed}
-                </span>
-                <span className="text-green-700 ml-1">terminés</span>
-              </div>
-            </div>
-          </div>
+    <div className="min-h-screen bg-gray-50 p-6">
+      <div className="max-w-6xl mx-auto">
+        <div className="bg-white rounded-lg shadow-sm p-6 mb-6">
+          <h1 className="text-3xl font-bold text-gray-900 mb-2">
+            Project Tracker
+          </h1>
+          <p className="text-gray-600">
+            Gestion des bugs et tâches de l'équipe
+          </p>
         </div>
 
         {/* Tabs */}
-        <div className="bg-white rounded-2xl shadow-lg mb-6 border border-slate-200 overflow-hidden">
-          <div className="flex">
+        <div className="bg-white rounded-lg shadow-sm mb-6">
+          <div className="flex border-b">
             <button
               onClick={() => setActiveTab("bugs")}
-              className={`flex-1 px-6 py-5 font-semibold transition-all duration-200 flex items-center justify-center gap-2 ${
+              className={`flex-1 px-6 py-4 font-medium transition-colors ${
                 activeTab === "bugs"
-                  ? "bg-gradient-to-r from-red-500 to-rose-500 text-white shadow-lg"
-                  : "text-slate-600 hover:bg-slate-50"
+                  ? "text-red-600 border-b-2 border-red-600"
+                  : "text-gray-600 hover:text-gray-900"
               }`}
             >
-              <AlertCircle size={22} />
-              <span>Bugs</span>
-              <span
-                className={`px-2 py-1 rounded-full text-xs ${
-                  activeTab === "bugs" ? "bg-white/20" : "bg-slate-200"
-                }`}
-              >
-                {bugs.length}
-              </span>
+              <AlertCircle className="inline mr-2" size={20} />
+              Bugs ({bugs.length})
             </button>
             <button
               onClick={() => setActiveTab("todos")}
-              className={`flex-1 px-6 py-5 font-semibold transition-all duration-200 flex items-center justify-center gap-2 ${
+              className={`flex-1 px-6 py-4 font-medium transition-colors ${
                 activeTab === "todos"
-                  ? "bg-gradient-to-r from-blue-500 to-cyan-500 text-white shadow-lg"
-                  : "text-slate-600 hover:bg-slate-50"
+                  ? "text-blue-600 border-b-2 border-blue-600"
+                  : "text-gray-600 hover:text-gray-900"
               }`}
             >
-              <CheckCircle2 size={22} />
-              <span>Todos</span>
-              <span
-                className={`px-2 py-1 rounded-full text-xs ${
-                  activeTab === "todos" ? "bg-white/20" : "bg-slate-200"
-                }`}
-              >
-                {todos.length}
-              </span>
+              <CheckCircle2 className="inline mr-2" size={20} />
+              Todos ({todos.length})
             </button>
           </div>
         </div>
 
-        {/* Filters & Actions */}
-        <div className="flex flex-col sm:flex-row gap-3 mb-6">
-          <button
-            onClick={() => setShowForm(true)}
-            className="bg-gradient-to-r from-blue-600 to-violet-600 text-white px-6 py-3 rounded-xl hover:from-blue-700 hover:to-violet-700 transition-all duration-200 flex items-center justify-center gap-2 font-semibold shadow-lg hover:shadow-xl"
-          >
-            <Plus size={20} />
-            Ajouter {activeTab === "bugs" ? "un bug" : "une tâche"}
-          </button>
+        {/* Bouton Ajouter */}
+        <button
+          onClick={() => setShowForm(true)}
+          className="mb-6 bg-blue-600 text-white px-6 py-3 rounded-lg hover:bg-blue-700 transition-colors flex items-center gap-2"
+        >
+          <Plus size={20} />
+          Ajouter {activeTab === "bugs" ? "un bug" : "une tâche"}
+        </button>
 
-          <div className="flex gap-2 bg-white rounded-xl p-1 border border-slate-200 shadow-sm">
-            <button
-              onClick={() => setFilterStatus("all")}
-              className={`px-4 py-2 rounded-lg text-sm font-medium transition-all ${
-                filterStatus === "all"
-                  ? "bg-slate-900 text-white"
-                  : "text-slate-600 hover:bg-slate-100"
-              }`}
-            >
-              Tous
-            </button>
-            <button
-              onClick={() => setFilterStatus("open")}
-              className={`px-4 py-2 rounded-lg text-sm font-medium transition-all ${
-                filterStatus === "open"
-                  ? "bg-slate-900 text-white"
-                  : "text-slate-600 hover:bg-slate-100"
-              }`}
-            >
-              En cours
-            </button>
-            <button
-              onClick={() => setFilterStatus("closed")}
-              className={`px-4 py-2 rounded-lg text-sm font-medium transition-all ${
-                filterStatus === "closed"
-                  ? "bg-slate-900 text-white"
-                  : "text-slate-600 hover:bg-slate-100"
-              }`}
-            >
-              Terminés
-            </button>
-          </div>
-        </div>
-
-        {/* Modal */}
+        {/* Formulaire */}
         {showForm && (
-          <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center p-4 z-50 animate-in fade-in duration-200">
-            <div className="bg-white rounded-2xl p-6 md:p-8 max-w-lg w-full shadow-2xl animate-in zoom-in-95 duration-200">
-              <div className="flex justify-between items-center mb-6">
-                <h2 className="text-2xl font-bold text-slate-900">
+          <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
+            <div className="bg-white rounded-lg p-6 max-w-md w-full">
+              <div className="flex justify-between items-center mb-4">
+                <h2 className="text-xl font-bold">
                   {editingItem ? "Modifier" : "Ajouter"}{" "}
                   {activeTab === "bugs" ? "un bug" : "une tâche"}
                 </h2>
                 <button
                   onClick={resetForm}
-                  className="text-slate-400 hover:text-slate-600 p-2 hover:bg-slate-100 rounded-lg transition-colors"
+                  className="text-gray-500 hover:text-gray-700"
                 >
                   <X size={24} />
                 </button>
               </div>
-              <div className="space-y-5">
+              <form onSubmit={handleSubmit} className="space-y-4">
                 <div>
-                  <label className="block text-sm font-semibold text-slate-700 mb-2">
-                    Titre *
+                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                    Titre
                   </label>
                   <input
                     type="text"
+                    required
                     value={formData.title}
                     onChange={(e) =>
                       setFormData({ ...formData, title: e.target.value })
                     }
-                    className="w-full px-4 py-3 border-2 border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
-                    placeholder="Titre descriptif..."
+                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
                   />
                 </div>
                 <div>
-                  <label className="block text-sm font-semibold text-slate-700 mb-2">
+                  <label className="block text-sm font-medium text-gray-700 mb-1">
                     Description
                   </label>
                   <textarea
@@ -377,174 +289,137 @@ export default function ProjectTracker() {
                     onChange={(e) =>
                       setFormData({ ...formData, description: e.target.value })
                     }
-                    rows={4}
-                    className="w-full px-4 py-3 border-2 border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all resize-none"
-                    placeholder="Détails supplémentaires..."
+                    rows={3}
+                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
                   />
                 </div>
-                <div className="grid grid-cols-2 gap-4">
-                  <div>
-                    <label className="block text-sm font-semibold text-slate-700 mb-2">
-                      Priorité
-                    </label>
-                    <select
-                      value={formData.priority}
-                      onChange={(e) =>
-                        setFormData({ ...formData, priority: e.target.value })
-                      }
-                      className="w-full px-4 py-3 border-2 border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
-                    >
-                      <option value="low">🟢 Basse</option>
-                      <option value="medium">🟡 Moyenne</option>
-                      <option value="high">🔴 Haute</option>
-                    </select>
-                  </div>
-                  <div>
-                    <label className="block text-sm font-semibold text-slate-700 mb-2">
-                      Assigné à
-                    </label>
-                    <input
-                      type="text"
-                      value={formData.assignee}
-                      onChange={(e) =>
-                        setFormData({ ...formData, assignee: e.target.value })
-                      }
-                      placeholder="Nom"
-                      className="w-full px-4 py-3 border-2 border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
-                    />
-                  </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                    Priorité
+                  </label>
+                  <select
+                    value={formData.priority}
+                    onChange={(e) =>
+                      setFormData({ ...formData, priority: e.target.value })
+                    }
+                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  >
+                    <option value="low">Basse</option>
+                    <option value="medium">Moyenne</option>
+                    <option value="high">Haute</option>
+                  </select>
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                    Assigné à
+                  </label>
+                  <input
+                    type="text"
+                    value={formData.assignee}
+                    onChange={(e) =>
+                      setFormData({ ...formData, assignee: e.target.value })
+                    }
+                    placeholder="Nom du membre"
+                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  />
                 </div>
                 <div className="flex gap-3 pt-4">
                   <button
-                    onClick={handleSubmit}
-                    className="flex-1 bg-gradient-to-r from-blue-600 to-violet-600 text-white py-3 rounded-xl hover:from-blue-700 hover:to-violet-700 transition-all font-semibold shadow-lg hover:shadow-xl"
+                    type="submit"
+                    className="flex-1 bg-blue-600 text-white py-2 rounded-md hover:bg-blue-700 transition-colors"
                   >
                     {editingItem ? "Modifier" : "Ajouter"}
                   </button>
                   <button
+                    type="button"
                     onClick={resetForm}
-                    className="flex-1 bg-slate-100 text-slate-700 py-3 rounded-xl hover:bg-slate-200 transition-all font-semibold"
+                    className="flex-1 bg-gray-200 text-gray-700 py-2 rounded-md hover:bg-gray-300 transition-colors"
                   >
                     Annuler
                   </button>
                 </div>
-              </div>
+              </form>
             </div>
           </div>
         )}
 
-        {/* Items List */}
+        {/* Liste des items */}
         <div className="space-y-4">
-          {filteredItems.length === 0 ? (
-            <div className="bg-white rounded-2xl shadow-lg p-12 text-center border border-slate-200">
-              <div className="text-slate-400 text-6xl mb-4">📋</div>
-              <p className="text-slate-500 text-lg">
-                {filterStatus === "all"
-                  ? `Aucun ${activeTab === "bugs" ? "bug" : "todo"} pour le moment`
-                  : `Aucun élément ${filterStatus === "open" ? "en cours" : "terminé"}`}
-              </p>
+          {items.length === 0 ? (
+            <div className="bg-white rounded-lg shadow-sm p-8 text-center text-gray-500">
+              Aucun {activeTab === "bugs" ? "bug" : "todo"} pour le moment
             </div>
           ) : (
-            filteredItems.map((item) => (
+            items.map((item) => (
               <div
                 key={item.id}
-                className={`bg-white rounded-2xl shadow-lg border-2 transition-all duration-300 hover:shadow-xl ${
-                  item.status === "closed"
-                    ? "border-green-200 bg-green-50/30"
-                    : "border-slate-200 hover:border-blue-300"
+                className={`bg-white rounded-lg shadow-sm p-4 transition-all ${
+                  item.status === "closed" ? "opacity-60" : ""
                 }`}
               >
-                <div className="p-5 md:p-6">
-                  <div className="flex items-start gap-4">
-                    {/* Checkbox */}
-                    <button
-                      onClick={() => toggleStatus(item)}
-                      className={`flex-shrink-0 w-7 h-7 rounded-lg border-2 flex items-center justify-center transition-all duration-200 ${
-                        item.status === "closed"
-                          ? "bg-gradient-to-br from-green-500 to-emerald-600 border-green-500 shadow-lg"
-                          : "border-slate-300 hover:border-blue-500 hover:bg-blue-50"
-                      }`}
-                    >
-                      {item.status === "closed" && (
-                        <CheckCircle2
-                          size={18}
-                          className="text-white"
-                          strokeWidth={3}
-                        />
-                      )}
-                    </button>
-
-                    {/* Content */}
-                    <div className="flex-1 min-w-0">
-                      <div className="flex flex-wrap items-center gap-3 mb-2">
-                        <h3
-                          className={`text-lg font-semibold ${
-                            item.status === "closed"
-                              ? "line-through text-slate-400"
-                              : "text-slate-900"
-                          }`}
-                        >
-                          {item.title}
-                        </h3>
-                        <span
-                          className={`px-3 py-1 rounded-lg text-xs font-bold border ${getPriorityColor(item.priority)}`}
-                        >
-                          {item.priority === "low"
-                            ? "🟢 BASSE"
-                            : item.priority === "medium"
-                              ? "🟡 MOYENNE"
-                              : "🔴 HAUTE"}
-                        </span>
-                      </div>
-
-                      {item.description && (
-                        <p
-                          className={`mb-3 ${item.status === "closed" ? "text-slate-400" : "text-slate-600"}`}
-                        >
-                          {item.description}
-                        </p>
-                      )}
-
-                      <div className="flex flex-wrap items-center gap-4 text-sm">
-                        {item.assignee && (
-                          <div className="flex items-center gap-2 text-slate-600 bg-slate-100 px-3 py-1 rounded-lg">
-                            <User size={14} />
-                            <span className="font-medium">{item.assignee}</span>
-                          </div>
+                <div className="flex items-start justify-between">
+                  <div className="flex-1">
+                    <div className="flex items-center gap-3 mb-2">
+                      <button
+                        onClick={() => toggleStatus(item)}
+                        className={`w-6 h-6 rounded border-2 flex items-center justify-center transition-colors ${
+                          item.status === "closed"
+                            ? "bg-green-500 border-green-500"
+                            : "border-gray-300 hover:border-green-500"
+                        }`}
+                      >
+                        {item.status === "closed" && (
+                          <CheckCircle2 size={16} className="text-white" />
                         )}
-                        <div className="flex items-center gap-2 text-slate-500">
-                          <Calendar size={14} />
-                          <span>
-                            {new Date(item.created_at).toLocaleDateString(
-                              "fr-FR",
-                              {
-                                day: "numeric",
-                                month: "short",
-                                year: "numeric",
-                              },
-                            )}
-                          </span>
-                        </div>
-                      </div>
-                    </div>
-
-                    {/* Actions */}
-                    <div className="flex gap-2 flex-shrink-0">
-                      <button
-                        onClick={() => handleEdit(item)}
-                        className="p-2.5 text-blue-600 hover:bg-blue-50 rounded-lg transition-colors"
-                        title="Modifier"
-                      >
-                        <Edit2 size={18} />
                       </button>
-                      <button
-                        onClick={() => handleDelete(item.id)}
-                        className="p-2.5 text-red-600 hover:bg-red-50 rounded-lg transition-colors"
-                        title="Supprimer"
+                      <h3
+                        className={`text-lg font-semibold ${
+                          item.status === "closed"
+                            ? "line-through text-gray-500"
+                            : "text-gray-900"
+                        }`}
                       >
-                        <Trash2 size={18} />
-                      </button>
+                        {item.title}
+                      </h3>
+                      <span
+                        className={`px-2 py-1 rounded text-xs font-medium ${getPriorityColor(item.priority)}`}
+                      >
+                        {item.priority === "low"
+                          ? "Basse"
+                          : item.priority === "medium"
+                            ? "Moyenne"
+                            : "Haute"}
+                      </span>
                     </div>
+                    {item.description && (
+                      <p className="text-gray-600 ml-9 mb-2">
+                        {item.description}
+                      </p>
+                    )}
+                    <div className="flex items-center gap-4 ml-9 text-sm text-gray-500">
+                      {item.assignee && <span>👤 {item.assignee}</span>}
+                      <span>
+                        {new Date(item.created_at).toLocaleDateString("fr-FR", {
+                          day: "numeric",
+                          month: "short",
+                          year: "numeric",
+                        })}
+                      </span>
+                    </div>
+                  </div>
+                  <div className="flex gap-2">
+                    <button
+                      onClick={() => handleEdit(item)}
+                      className="p-2 text-blue-600 hover:bg-blue-50 rounded transition-colors"
+                    >
+                      <Edit2 size={18} />
+                    </button>
+                    <button
+                      onClick={() => handleDelete(item.id)}
+                      className="p-2 text-red-600 hover:bg-red-50 rounded transition-colors"
+                    >
+                      <Trash2 size={18} />
+                    </button>
                   </div>
                 </div>
               </div>
