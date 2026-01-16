@@ -185,9 +185,9 @@ export default function ProjectTracker() {
 
   const getPriorityColor = (priority) => {
     const colors = {
-      low: "bg-green-100 text-green-800",
-      medium: "bg-yellow-100 text-yellow-800",
-      high: "bg-red-100 text-red-800",
+      low: "bg-emerald-900 text-emerald-300",
+      medium: "bg-teal-900 text-teal-300",
+      high: "bg-red-900 text-red-300",
     };
     return colors[priority] || colors.medium;
   };
@@ -215,10 +215,10 @@ export default function ProjectTracker() {
           <div className="flex border-b border-emerald-800">
             <button
               onClick={() => setActiveTab("bugs")}
-              className={`flex-1 px-6 py-4 font-medium transition-colors ${
+              className={`flex-1 px-6 py-4 font-bold tracking-wide transition-colors ${
                 activeTab === "bugs"
-                  ? "text-red-600 border-b-2 border-red-600"
-                  : "text-gray-600 hover:text-gray-900"
+                  ? "text-red-400 border-b-2 border-red-500 bg-red-900/20"
+                  : "text-emerald-300 hover:text-emerald-400"
               }`}
             >
               <AlertCircle className="inline mr-2" size={20} />
@@ -226,10 +226,10 @@ export default function ProjectTracker() {
             </button>
             <button
               onClick={() => setActiveTab("todos")}
-              className={`flex-1 px-6 py-4 font-medium transition-colors ${
+              className={`flex-1 px-6 py-4 font-bold tracking-wide transition-colors ${
                 activeTab === "todos"
-                  ? "text-blue-600 border-b-2 border-blue-600"
-                  : "text-gray-600 hover:text-gray-900"
+                  ? "text-emerald-400 border-b-2 border-emerald-500 bg-emerald-900/20"
+                  : "text-emerald-300 hover:text-emerald-400"
               }`}
             >
               <CheckCircle2 className="inline mr-2" size={20} />
@@ -241,7 +241,7 @@ export default function ProjectTracker() {
         {/* Bouton Ajouter */}
         <button
           onClick={() => setShowForm(true)}
-          className="mb-6 bg-blue-600 text-white px-6 py-3 rounded-lg hover:bg-blue-700 transition-colors flex items-center gap-2"
+          className="mb-6 bg-emerald-600 text-black px-6 py-3 rounded-lg hover:bg-emerald-500 transition-colors flex items-center gap-2 font-bold tracking-wide shadow-lg shadow-emerald-900/40"
         >
           <Plus size={20} />
           Ajouter {activeTab === "bugs" ? "un bug" : "une tâche"}
