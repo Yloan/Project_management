@@ -13,7 +13,7 @@ const SUPABASE_URL = "https://wsjtuvhqhydjvveypmgq.supabase.co";
 const SUPABASE_ANON_KEY =
   "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6IndzanR1dmhxaHlkanZ2ZXlwbWdxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Njg1NzQ2MjUsImV4cCI6MjA4NDE1MDYyNX0.XDQjtSnI8uAxtswVk5YcKmPcTwj5ijirT_4voBrJDiA";
 
-// Client Supabase simple
+
 const supabase = {
   from: (table) => ({
     select: async (columns = "*") => {
